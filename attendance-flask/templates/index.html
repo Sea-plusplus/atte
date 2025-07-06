@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SINEWAVE Attendance Portal</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div id="header">
+        <pre class="ascii-header">
+                      ___________  ___________________  _______
+      ===== 4C 45 54 / ___       |/    __  / /    _   |/    __/ 4C 4F 56 =====
+=/=/=/=/=/ 53 20 41 /__  /  /  , ' /  __/ / / /  _  | ' /  __/ 45 20 4C /=/=/=/=/=
+      ===== 4C 4C 20 /____/__/__/|__/____/_____/__/__/|__/____/ 41 49 4E =====
+
+           ==// WELCOME, USER //==============// YOU ARE SAFE HERE //==
+        </pre>
+    </div>
+
+    <div class="main app">
+        <h1>Attendance Input</h1>
+        <form method="post">
+            {% for subject in subjects %}
+                <fieldset>
+                    <legend>{{ subject }}</legend>
+                    <label><input type="radio" name="{{ subject }}_type" value="count" checked> Number attended</label>
+                    <input type="number" name="{{ subject }}_attended" min="0"><br>
+
+                    <label><input type="radio" name="{{ subject }}_type" value="percent"> Estimated %</label>
+                    <input type="number" name="{{ subject }}_percent" min="0" max="100"><br>
+                </fieldset>
+                <br>
+            {% endfor %}
+            <input type="submit" value="Generate Report">
+        </form>
+
+        {% if report %}
+            <hr>
+            <h2>📊 Attendance Report</h2>
+            {% for item in report %}
+                <div class="report-box">
+                    <b>Subject:</b> {{ item.subject }}<br>
+                    Classes held: {{ item.held }}<br>
+                    Classes attended: {{ item.attended }}<br>
+                    Current percentage: {{ item.percent }}%<br>
+                    Future classes: {{ item.future }}<br>
+                    Must attend: {{ item.needed }}<br>
+                    {% if item.percent >= 75 %}
+                        ✅ You are safe. You can miss {{ item.bunks }} more classes.<br>
+                    {% elif item.unreachable %}
+                        ❌ You cannot reach 75% even if you attend all remaining classes.<br>
+                    {% else %}
+                        ⚠️ You need to attend {{ item.reach_count }} classes starting now and reach 75% by {{ item.reach_date }}.<br>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div id="footer">
+        <div class="badge-grid">
+            <img src="/static/badges/sinewave.gif">
+        </div>
+        <p class="footer-text">SINEWAVE // Present day, Present time // 2025</p>
+    </div>
+</body>
+</html>
